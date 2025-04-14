@@ -1,0 +1,44 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id              Int           @id @default(autoincrement())
+  email           String        @unique
+  name            String?
+  password        String
+  status          Boolean       @default(false)
+  profileImg      String?
+  role            String        @default("resturant")
+}
+
+model SurplusFood {
+  id          Int      @id @default(autoincrement())
+  name        String
+  servings    String
+  description String?
+  expiryTime  String?
+  pickupTime  String?
+  image       String?
+  created_at  DateTime @default(now())
+  provider_id Int?
+  shelter_id  Int?
+  
+  requests   FoodRequests[] // Relation to IdeaHistory
+}
+
+model FoodRequests {
+  id Int  @id @default(autoincrement())
+  request String?
+  status String?
+  surplus_food_id     Int
+  surplus_food        SurplusFood     @relation(fields: [surplus_food_id], references: [id])
+}
